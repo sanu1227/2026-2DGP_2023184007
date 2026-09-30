@@ -1,15 +1,23 @@
 """800x600 화면에서 사무라이 애니메이션을 재생한다."""
 
+import json
+from pathlib import Path
+
 from pico2d import *
 
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
+ASSET_DIR = Path(__file__).resolve().parent
 
 
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     try:
+        sheet = load_image(str(ASSET_DIR / "samurai_sheet.png"))
+        metadata = json.loads(
+            (ASSET_DIR / "samurai_sheet.json").read_text(encoding="utf-8")
+        )
         running = True
         while running:
             for event in get_events():
