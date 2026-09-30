@@ -66,6 +66,10 @@ def main():
                 image, bounds = trim_frame(frame)
                 selected.append((name, image, bounds))
     placed, height = place_frames(selected)
+    sheet = Image.new("RGBA", (SHEET_WIDTH, height))
+    for name, image, bounds, x, y in placed:
+        sheet.paste(image, (x, y))
+    sheet.save(Path(__file__).with_name("samurai_sheet.png"))
     print(f"시트 배치: {len(placed)}프레임, {SHEET_WIDTH}x{height}")
 
 
