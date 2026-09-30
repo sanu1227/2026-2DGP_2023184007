@@ -1,6 +1,7 @@
 """CC0 사무라이 원본에서 과제용 스프라이트 시트를 만든다."""
 
 from io import BytesIO
+from hashlib import sha256
 from pathlib import Path
 from urllib.request import Request, urlopen
 from zipfile import ZipFile
@@ -10,6 +11,7 @@ from PIL import Image
 
 
 SOURCE_URL = "https://opengameart.org/sites/default/files/samurai1.zip"
+SOURCE_SHA256 = "f7b19f54339214e935aa575a36cf98452e07805852e164c389bef2f975f86954"
 ANIMATIONS = {
     "idle": "Samurai1/01-Idle/__Samurai1_Idle_",
     "run": "Samurai1/02-Run/__Samurai1_Run_",
@@ -22,10 +24,14 @@ PADDING = 8
 
 def read_source():
     if len(sys.argv) > 1:
-        return Path(sys.argv[1]).read_bytes()
-    request = Request(SOURCE_URL, headers={"User-Agent": "Mozilla/5.0"})
-    with urlopen(request) as response:
-        return response.read()
+        data = Path(sys.argv[1]).read_bytes()
+    else:
+        request = Request(SOURCE_URL, headers={"User-Agent": "Mozilla/5.0"})
+        with urlopen(request) as response:
+            data = response.read()
+    if sha256(data).hexdigest() != SOURCE_SHA256:
+        raise ValueError("원본 압축 파일의 SHA-256이 예상 값과 다릅니다")
+    return data
 
 
 def trim_frame(frame):
