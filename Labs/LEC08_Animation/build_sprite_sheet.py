@@ -4,6 +4,7 @@ from io import BytesIO
 from pathlib import Path
 from urllib.request import Request, urlopen
 from zipfile import ZipFile
+import json
 import sys
 from PIL import Image
 
@@ -67,9 +68,21 @@ def main():
                 selected.append((name, image, bounds))
     placed, height = place_frames(selected)
     sheet = Image.new("RGBA", (SHEET_WIDTH, height))
+    metadata = {
+        "sheet_size": [SHEET_WIDTH, height],
+        "source_size": [595, 483],
+        "animations": {name: [] for name in ANIMATIONS},
+    }
     for name, image, bounds, x, y in placed:
         sheet.paste(image, (x, y))
+        metadata["animations"][name].append({
+            "x": x, "y": y, "w": image.width, "h": image.height,
+            "source_x": bounds[0], "source_y": bounds[1],
+        })
     sheet.save(Path(__file__).with_name("samurai_sheet.png"))
+    Path(__file__).with_name("samurai_sheet.json").write_text(
+        json.dumps(metadata, indent=2) + "\n", encoding="utf-8"
+    )
     print(f"시트 배치: {len(placed)}프레임, {SHEET_WIDTH}x{height}")
 
 
