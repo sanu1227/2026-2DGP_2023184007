@@ -11,6 +11,7 @@ CANVAS_HEIGHT = 600
 DISPLAY_SCALE = 1.4
 FRAME_TIME = 0.1
 REPEAT_COUNT = 5
+PAUSE_SECONDS = 1.0
 ANIMATION_ORDER = ("idle", "run", "attack", "hurt")
 ASSET_DIR = Path(__file__).resolve().parent
 
@@ -38,12 +39,15 @@ def main():
                     running = False
             now = get_time()
             elapsed = now - animation_start
-            while elapsed >= len(frames) * FRAME_TIME * REPEAT_COUNT:
-                elapsed -= len(frames) * FRAME_TIME * REPEAT_COUNT
+            while elapsed >= len(frames) * FRAME_TIME * REPEAT_COUNT + PAUSE_SECONDS:
+                elapsed -= len(frames) * FRAME_TIME * REPEAT_COUNT + PAUSE_SECONDS
                 animation_index = (animation_index + 1) % len(ANIMATION_ORDER)
                 frames = metadata["animations"][ANIMATION_ORDER[animation_index]]
                 animation_start = now - elapsed
-            frame_index = int(elapsed / FRAME_TIME) % len(frames)
+            if elapsed >= len(frames) * FRAME_TIME * REPEAT_COUNT:
+                frame_index = len(frames) - 1
+            else:
+                frame_index = int(elapsed / FRAME_TIME) % len(frames)
             frame = frames[frame_index]
             clear_canvas()
             draw_x = CANVAS_WIDTH / 2 + (
