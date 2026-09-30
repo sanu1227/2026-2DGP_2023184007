@@ -10,7 +10,7 @@ CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 DISPLAY_SCALE = 1.4
 FRAME_TIME = 0.1
-ANIMATION_ORDER = ("idle", "run", "attack")
+ANIMATION_ORDER = ("idle", "run", "attack", "hurt")
 ASSET_DIR = Path(__file__).resolve().parent
 
 
