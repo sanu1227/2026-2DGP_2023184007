@@ -5,6 +5,7 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 from zipfile import ZipFile
 import sys
+from PIL import Image
 
 
 SOURCE_URL = "https://opengameart.org/sites/default/files/samurai1.zip"
@@ -29,7 +30,11 @@ def main():
         for name, prefix in ANIMATIONS.items():
             files = sorted(path for path in archive.namelist()
                            if path.startswith(prefix) and path.endswith(".png"))
-            print(f"{name}: {len(files)}프레임")
+            frames = []
+            for path in files:
+                with Image.open(BytesIO(archive.read(path))) as image:
+                    frames.append(image.convert("RGBA"))
+            print(f"{name}: {len(frames)}프레임, 원본 크기 {frames[0].size}")
 
 
 if __name__ == "__main__":
