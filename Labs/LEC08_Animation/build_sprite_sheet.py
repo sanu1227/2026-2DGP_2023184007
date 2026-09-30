@@ -15,6 +15,8 @@ ANIMATIONS = {
     "attack": "Samurai1/04-Attack/Attack1/__Samurai1_Attack1_",
     "hurt": "Samurai1/06-Hurt/__Samurai1_Hurt_",
 }
+SHEET_WIDTH = 2048
+PADDING = 8
 
 
 def read_source():
@@ -32,7 +34,23 @@ def trim_frame(frame):
     return frame.crop(bounds), bounds
 
 
+def place_frames(frames):
+    x = y = PADDING
+    row_height = 0
+    placed = []
+    for name, image, bounds in frames:
+        if x + image.width + PADDING > SHEET_WIDTH:
+            x = PADDING
+            y += row_height + PADDING
+            row_height = 0
+        placed.append((name, image, bounds, x, y))
+        x += image.width + PADDING
+        row_height = max(row_height, image.height)
+    return placed, y + row_height + PADDING
+
+
 def main():
+    selected = []
     with ZipFile(BytesIO(read_source())) as archive:
         for name, prefix in ANIMATIONS.items():
             files = sorted(path for path in archive.namelist()
@@ -44,6 +62,11 @@ def main():
             sizes = [trim_frame(frame)[0].size for frame in frames]
             print(f"{name}: {len(frames)}프레임, 원본 크기 {frames[0].size}, "
                   f"잘린 크기 {min(sizes)}~{max(sizes)}")
+            for frame in frames:
+                image, bounds = trim_frame(frame)
+                selected.append((name, image, bounds))
+    placed, height = place_frames(selected)
+    print(f"시트 배치: {len(placed)}프레임, {SHEET_WIDTH}x{height}")
 
 
 if __name__ == "__main__":
