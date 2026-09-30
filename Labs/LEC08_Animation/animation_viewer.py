@@ -18,6 +18,8 @@ def main():
         metadata = json.loads(
             (ASSET_DIR / "samurai_sheet.json").read_text(encoding="utf-8")
         )
+        frame = metadata["animations"]["idle"][0]
+        sheet_height = metadata["sheet_size"][1]
         running = True
         while running:
             for event in get_events():
@@ -26,6 +28,11 @@ def main():
                 elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
                     running = False
             clear_canvas()
+            sheet.clip_draw(
+                frame["x"], sheet_height - frame["y"] - frame["h"],
+                frame["w"], frame["h"],
+                CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2,
+            )
             update_canvas()
             delay(0.02)
     finally:
