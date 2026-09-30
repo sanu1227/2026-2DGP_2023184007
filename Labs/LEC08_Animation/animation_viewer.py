@@ -21,6 +21,8 @@ def main():
         )
         frame = metadata["animations"]["idle"][0]
         sheet_height = metadata["sheet_size"][1]
+        anchor_x = frame["source_x"] + frame["w"] / 2
+        anchor_y = frame["source_y"] + frame["h"] / 2
         running = True
         while running:
             for event in get_events():
@@ -29,10 +31,16 @@ def main():
                 elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
                     running = False
             clear_canvas()
+            draw_x = CANVAS_WIDTH / 2 + (
+                frame["source_x"] + frame["w"] / 2 - anchor_x
+            ) * DISPLAY_SCALE
+            draw_y = CANVAS_HEIGHT / 2 - (
+                frame["source_y"] + frame["h"] / 2 - anchor_y
+            ) * DISPLAY_SCALE
             sheet.clip_draw(
                 frame["x"], sheet_height - frame["y"] - frame["h"],
                 frame["w"], frame["h"],
-                CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2,
+                draw_x, draw_y,
                 int(frame["w"] * DISPLAY_SCALE),
                 int(frame["h"] * DISPLAY_SCALE),
             )
