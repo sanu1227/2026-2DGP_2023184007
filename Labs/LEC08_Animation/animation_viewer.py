@@ -9,6 +9,7 @@ from pico2d import *
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 DISPLAY_SCALE = 1.4
+FRAME_TIME = 0.1
 ASSET_DIR = Path(__file__).resolve().parent
 
 
@@ -19,10 +20,12 @@ def main():
         metadata = json.loads(
             (ASSET_DIR / "samurai_sheet.json").read_text(encoding="utf-8")
         )
-        frame = metadata["animations"]["idle"][0]
+        frames = metadata["animations"]["idle"]
+        frame = frames[0]
         sheet_height = metadata["sheet_size"][1]
         anchor_x = frame["source_x"] + frame["w"] / 2
         anchor_y = frame["source_y"] + frame["h"] / 2
+        animation_start = get_time()
         running = True
         while running:
             for event in get_events():
@@ -30,6 +33,8 @@ def main():
                     running = False
                 elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
                     running = False
+            frame_index = int((get_time() - animation_start) / FRAME_TIME) % len(frames)
+            frame = frames[frame_index]
             clear_canvas()
             draw_x = CANVAS_WIDTH / 2 + (
                 frame["source_x"] + frame["w"] / 2 - anchor_x
