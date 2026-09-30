@@ -10,6 +10,7 @@ CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
 DISPLAY_SCALE = 1.4
 FRAME_TIME = 0.1
+ANIMATION_ORDER = ("idle", "run")
 ASSET_DIR = Path(__file__).resolve().parent
 
 
@@ -20,7 +21,8 @@ def main():
         metadata = json.loads(
             (ASSET_DIR / "samurai_sheet.json").read_text(encoding="utf-8")
         )
-        frames = metadata["animations"]["idle"]
+        animation_index = 0
+        frames = metadata["animations"][ANIMATION_ORDER[animation_index]]
         frame = frames[0]
         sheet_height = metadata["sheet_size"][1]
         anchor_x = frame["source_x"] + frame["w"] / 2
@@ -33,7 +35,14 @@ def main():
                     running = False
                 elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
                     running = False
-            frame_index = int((get_time() - animation_start) / FRAME_TIME) % len(frames)
+            now = get_time()
+            elapsed = now - animation_start
+            while elapsed >= len(frames) * FRAME_TIME:
+                elapsed -= len(frames) * FRAME_TIME
+                animation_index = (animation_index + 1) % len(ANIMATION_ORDER)
+                frames = metadata["animations"][ANIMATION_ORDER[animation_index]]
+                animation_start = now - elapsed
+            frame_index = int(elapsed / FRAME_TIME) % len(frames)
             frame = frames[frame_index]
             clear_canvas()
             draw_x = CANVAS_WIDTH / 2 + (
