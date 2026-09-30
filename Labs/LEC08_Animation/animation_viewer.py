@@ -8,6 +8,7 @@ from pico2d import *
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 600
+DISPLAY_SCALE = 1.4
 ASSET_DIR = Path(__file__).resolve().parent
 
 
@@ -32,6 +33,8 @@ def main():
                 frame["x"], sheet_height - frame["y"] - frame["h"],
                 frame["w"], frame["h"],
                 CANVAS_WIDTH // 2, CANVAS_HEIGHT // 2,
+                int(frame["w"] * DISPLAY_SCALE),
+                int(frame["h"] * DISPLAY_SCALE),
             )
             update_canvas()
             delay(0.02)
