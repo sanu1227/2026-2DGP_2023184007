@@ -16,6 +16,20 @@ ANIMATION_ORDER = ("idle", "run", "attack", "hurt")
 ASSET_DIR = Path(__file__).resolve().parent
 
 
+def frame_at(animations, elapsed):
+    total = sum(len(animations[name]) * FRAME_TIME * REPEAT_COUNT + PAUSE_SECONDS
+                for name in ANIMATION_ORDER)
+    elapsed %= total
+    for name in ANIMATION_ORDER:
+        frames = animations[name]
+        play_time = len(frames) * FRAME_TIME * REPEAT_COUNT
+        if elapsed < play_time + PAUSE_SECONDS:
+            if elapsed >= play_time:
+                return name, len(frames) - 1
+            return name, int((elapsed + 1e-9) / FRAME_TIME) % len(frames)
+        elapsed -= play_time + PAUSE_SECONDS
+
+
 def main():
     open_canvas(CANVAS_WIDTH, CANVAS_HEIGHT)
     try:
@@ -23,9 +37,7 @@ def main():
         metadata = json.loads(
             (ASSET_DIR / "samurai_sheet.json").read_text(encoding="utf-8")
         )
-        animation_index = 0
-        frames = metadata["animations"][ANIMATION_ORDER[animation_index]]
-        frame = frames[0]
+        frame = metadata["animations"][ANIMATION_ORDER[0]][0]
         sheet_height = metadata["sheet_size"][1]
         anchor_x = frame["source_x"] + frame["w"] / 2
         anchor_y = frame["source_y"] + frame["h"] / 2
@@ -37,18 +49,10 @@ def main():
                     running = False
                 elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
                     running = False
-            now = get_time()
-            elapsed = now - animation_start
-            while elapsed >= len(frames) * FRAME_TIME * REPEAT_COUNT + PAUSE_SECONDS:
-                elapsed -= len(frames) * FRAME_TIME * REPEAT_COUNT + PAUSE_SECONDS
-                animation_index = (animation_index + 1) % len(ANIMATION_ORDER)
-                frames = metadata["animations"][ANIMATION_ORDER[animation_index]]
-                animation_start = now - elapsed
-            if elapsed >= len(frames) * FRAME_TIME * REPEAT_COUNT:
-                frame_index = len(frames) - 1
-            else:
-                frame_index = int(elapsed / FRAME_TIME) % len(frames)
-            frame = frames[frame_index]
+            animation_name, frame_index = frame_at(
+                metadata["animations"], get_time() - animation_start
+            )
+            frame = metadata["animations"][animation_name][frame_index]
             clear_canvas()
             draw_x = CANVAS_WIDTH / 2 + (
                 frame["source_x"] + frame["w"] / 2 - anchor_x
