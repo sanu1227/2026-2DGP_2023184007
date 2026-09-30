@@ -25,6 +25,13 @@ def read_source():
         return response.read()
 
 
+def trim_frame(frame):
+    bounds = frame.getchannel("A").getbbox()
+    if bounds is None:
+        raise ValueError("투명한 프레임은 사용할 수 없습니다")
+    return frame.crop(bounds), bounds
+
+
 def main():
     with ZipFile(BytesIO(read_source())) as archive:
         for name, prefix in ANIMATIONS.items():
@@ -34,7 +41,9 @@ def main():
             for path in files:
                 with Image.open(BytesIO(archive.read(path))) as image:
                     frames.append(image.convert("RGBA"))
-            print(f"{name}: {len(frames)}프레임, 원본 크기 {frames[0].size}")
+            sizes = [trim_frame(frame)[0].size for frame in frames]
+            print(f"{name}: {len(frames)}프레임, 원본 크기 {frames[0].size}, "
+                  f"잘린 크기 {min(sizes)}~{max(sizes)}")
 
 
 if __name__ == "__main__":
