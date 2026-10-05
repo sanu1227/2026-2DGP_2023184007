@@ -6,8 +6,10 @@ from sys import argv
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 SCALE = 3
-FRAME_INTERVAL = 0.1
+FRAME_INTERVAL = 0.08
 ACTION_PAUSE = 1.0
+RENDER_DELAY = 0.005
+GROUND_Y = 230
 PLAYING = 0
 PAUSE_BETWEEN_ACTIONS = 1
 IMAGE_PATH = str(Path(__file__).resolve().with_name('sonic-sprite.png'))
@@ -134,8 +136,9 @@ def validate_actions():
     assert Path(IMAGE_PATH).is_file()
     assert len(ACTIONS) == 11
     assert SCALE == 3
-    assert FRAME_INTERVAL == 0.1
+    assert FRAME_INTERVAL == 0.08
     assert ACTION_PAUSE == 1.0
+    assert RENDER_DELAY <= 0.005
     for action in ACTIONS:
         assert action
         for frame in action:
@@ -161,7 +164,7 @@ def draw_current_frame():
     draw_width = source_width * SCALE
     draw_height = source_height * SCALE
     draw_x = max(draw_width // 2, min(WINDOW_WIDTH - draw_width // 2, WINDOW_WIDTH // 2))
-    draw_y = max(draw_height // 2, min(WINDOW_HEIGHT - draw_height // 2, WINDOW_HEIGHT // 2))
+    draw_y = max(draw_height // 2, min(WINDOW_HEIGHT - draw_height // 2, GROUND_Y + draw_height // 2))
     sonic.clip_draw(
         source_x,
         source_y,
@@ -195,11 +198,13 @@ def update_animation(delta_time):
         frame_elapsed -= FRAME_INTERVAL
         frame_index += 1
         if frame_index >= len(ACTIONS[action_index]):
-            frame_index = 0
             repeat_count += 1
             if repeat_count >= 5:
                 repeat_count = 0
+                frame_index = len(ACTIONS[action_index]) - 1
                 state = PAUSE_BETWEEN_ACTIONS
+            else:
+                frame_index = 0
 
 
 def main():
@@ -224,7 +229,7 @@ def main():
             clear_canvas()
             draw_current_frame()
             update_canvas()
-            delay(0.01)
+            delay(RENDER_DELAY)
     finally:
         close_canvas()
 
