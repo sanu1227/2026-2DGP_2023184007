@@ -197,22 +197,27 @@ def main():
     global sonic
 
     open_canvas(WINDOW_WIDTH, WINDOW_HEIGHT)
-    sonic = load_image(IMAGE_PATH)
+    try:
+        try:
+            sonic = load_image(IMAGE_PATH)
+        except Exception as error:
+            print(f'이미지 로드 실패: {error}')
+            return
 
-    running = True
-    previous_time = get_time()
-    while running:
-        running = handle_events()
-        current_time = get_time()
-        update_animation(current_time - previous_time)
-        previous_time = current_time
+        running = True
+        previous_time = get_time()
+        while running:
+            running = handle_events()
+            current_time = get_time()
+            update_animation(current_time - previous_time)
+            previous_time = current_time
 
-        clear_canvas()
-        draw_current_frame()
-        update_canvas()
-        delay(0.01)
-
-    close_canvas()
+            clear_canvas()
+            draw_current_frame()
+            update_canvas()
+            delay(0.01)
+    finally:
+        close_canvas()
 
 
 if __name__ == '__main__':
