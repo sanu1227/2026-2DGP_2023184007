@@ -149,7 +149,7 @@ def draw_current_frame():
 
 
 def update_animation(delta_time):
-    global frame_index, frame_elapsed
+    global action_index, frame_index, frame_elapsed
 
     frame_elapsed += delta_time
     if frame_elapsed >= FRAME_INTERVAL:
@@ -157,6 +157,9 @@ def update_animation(delta_time):
         frame_index += 1
         if frame_index >= len(ACTIONS[action_index]):
             frame_index = 0
+            action_index += 1
+            if action_index >= len(ACTIONS):
+                action_index = 0
 
 
 def main():
