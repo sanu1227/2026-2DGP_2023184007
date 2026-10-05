@@ -6,6 +6,8 @@ WINDOW_HEIGHT = 600
 SCALE = 3
 FRAME_INTERVAL = 0.1
 ACTION_PAUSE = 1.0
+PLAYING = 0
+PAUSE_BETWEEN_ACTIONS = 1
 IMAGE_PATH = 'sonic-sprite.png'
 IMAGE_WIDTH = 399
 IMAGE_HEIGHT = 525
@@ -123,6 +125,7 @@ frame_index = 0
 repeat_count = 0
 frame_elapsed = 0.0
 pause_elapsed = 0.0
+state = PLAYING
 
 
 def handle_events():
@@ -150,6 +153,14 @@ def draw_current_frame():
 
 def update_animation(delta_time):
     global action_index, frame_index, frame_elapsed, repeat_count
+    global pause_elapsed, state
+
+    if state == PAUSE_BETWEEN_ACTIONS:
+        pause_elapsed += delta_time
+        if pause_elapsed >= ACTION_PAUSE:
+            pause_elapsed = 0.0
+            state = PLAYING
+        return
 
     frame_elapsed += delta_time
     if frame_elapsed >= FRAME_INTERVAL:
@@ -160,9 +171,7 @@ def update_animation(delta_time):
             repeat_count += 1
             if repeat_count >= 5:
                 repeat_count = 0
-                action_index += 1
-                if action_index >= len(ACTIONS):
-                    action_index = 0
+                state = PAUSE_BETWEEN_ACTIONS
 
 
 def main():
