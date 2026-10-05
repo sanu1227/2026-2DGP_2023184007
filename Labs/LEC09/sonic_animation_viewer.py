@@ -182,7 +182,7 @@ def update_animation(delta_time):
         return
 
     frame_elapsed += delta_time
-    if frame_elapsed >= FRAME_INTERVAL:
+    while state == PLAYING and frame_elapsed >= FRAME_INTERVAL:
         frame_elapsed -= FRAME_INTERVAL
         frame_index += 1
         if frame_index >= len(ACTIONS[action_index]):
