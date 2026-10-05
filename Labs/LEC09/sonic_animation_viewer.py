@@ -45,7 +45,7 @@ def handle_events():
 
 
 def draw_current_frame():
-    source_x, source_y, source_width, source_height = ACTIONS[0][0]
+    source_x, source_y, source_width, source_height = ACTIONS[action_index][frame_index]
     sonic.clip_draw(
         source_x,
         source_y,
@@ -56,6 +56,17 @@ def draw_current_frame():
         source_width * SCALE,
         source_height * SCALE,
     )
+
+
+def update_animation(delta_time):
+    global frame_index, frame_elapsed
+
+    frame_elapsed += delta_time
+    if frame_elapsed >= FRAME_INTERVAL:
+        frame_elapsed -= FRAME_INTERVAL
+        frame_index += 1
+        if frame_index >= len(ACTIONS[action_index]):
+            frame_index = 0
 
 
 def main():
