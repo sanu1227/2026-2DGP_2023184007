@@ -4,6 +4,8 @@ from pico2d import *
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 SCALE = 3
+FRAME_INTERVAL = 0.1
+ACTION_PAUSE = 1.0
 IMAGE_PATH = 'sonic-sprite.png'
 IMAGE_WIDTH = 399
 IMAGE_HEIGHT = 525
@@ -26,6 +28,11 @@ ACTIONS = [
 
 
 sonic = None
+action_index = 0
+frame_index = 0
+repeat_count = 0
+frame_elapsed = 0.0
+pause_elapsed = 0.0
 
 
 def handle_events():
