@@ -159,6 +159,11 @@ def update_animation(delta_time):
         pause_elapsed += delta_time
         if pause_elapsed >= ACTION_PAUSE:
             pause_elapsed = 0.0
+            action_index += 1
+            if action_index >= len(ACTIONS):
+                action_index = 0
+            frame_index = 0
+            frame_elapsed = 0.0
             state = PLAYING
         return
 
