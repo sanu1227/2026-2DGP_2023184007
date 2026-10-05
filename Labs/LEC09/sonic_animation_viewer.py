@@ -4,6 +4,11 @@ from pico2d import *
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 IMAGE_PATH = 'sonic-sprite.png'
+IMAGE_WIDTH = 399
+IMAGE_HEIGHT = 525
+
+# (source_x, source_y, width, height), source origin is bottom-left.
+ACTIONS = []
 
 
 sonic = None
