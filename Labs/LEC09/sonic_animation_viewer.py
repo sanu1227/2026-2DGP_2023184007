@@ -153,15 +153,19 @@ def handle_events():
 
 def draw_current_frame():
     source_x, source_y, source_width, source_height = ACTIONS[action_index][frame_index]
+    draw_width = source_width * SCALE
+    draw_height = source_height * SCALE
+    draw_x = max(draw_width // 2, min(WINDOW_WIDTH - draw_width // 2, WINDOW_WIDTH // 2))
+    draw_y = max(draw_height // 2, min(WINDOW_HEIGHT - draw_height // 2, WINDOW_HEIGHT // 2))
     sonic.clip_draw(
         source_x,
         source_y,
         source_width,
         source_height,
-        WINDOW_WIDTH // 2,
-        WINDOW_HEIGHT // 2,
-        source_width * SCALE,
-        source_height * SCALE,
+        draw_x,
+        draw_y,
+        draw_width,
+        draw_height,
     )
 
 
