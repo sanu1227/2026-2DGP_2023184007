@@ -3,6 +3,7 @@ from pico2d import *
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
+SCALE = 3
 IMAGE_PATH = 'sonic-sprite.png'
 IMAGE_WIDTH = 399
 IMAGE_HEIGHT = 525
@@ -36,15 +37,31 @@ def handle_events():
     return True
 
 
+def draw_current_frame():
+    source_x, source_y, source_width, source_height = ACTIONS[0][0]
+    sonic.clip_draw(
+        source_x,
+        source_y,
+        source_width,
+        source_height,
+        WINDOW_WIDTH // 2,
+        WINDOW_HEIGHT // 2,
+        source_width * SCALE,
+        source_height * SCALE,
+    )
+
+
 def main():
     global sonic
 
     open_canvas(WINDOW_WIDTH, WINDOW_HEIGHT)
     sonic = load_image(IMAGE_PATH)
 
-    running = handle_events()
-    if running:
-        delay(0.01)
+    clear_canvas()
+    draw_current_frame()
+    update_canvas()
+    handle_events()
+    delay(0.01)
 
     close_canvas()
 
