@@ -1,4 +1,5 @@
 from pico2d import *
+from pathlib import Path
 from sys import argv
 
 
@@ -9,7 +10,7 @@ FRAME_INTERVAL = 0.1
 ACTION_PAUSE = 1.0
 PLAYING = 0
 PAUSE_BETWEEN_ACTIONS = 1
-IMAGE_PATH = 'sonic-sprite.png'
+IMAGE_PATH = str(Path(__file__).resolve().with_name('sonic-sprite.png'))
 IMAGE_WIDTH = 399
 IMAGE_HEIGHT = 525
 
@@ -130,6 +131,7 @@ state = PLAYING
 
 
 def validate_actions():
+    assert Path(IMAGE_PATH).is_file()
     assert len(ACTIONS) == 11
     assert SCALE == 3
     assert FRAME_INTERVAL == 0.1
