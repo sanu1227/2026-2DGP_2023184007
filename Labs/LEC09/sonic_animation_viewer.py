@@ -130,7 +130,10 @@ state = PLAYING
 
 
 def validate_actions():
-    assert ACTIONS
+    assert len(ACTIONS) == 11
+    assert SCALE == 3
+    assert FRAME_INTERVAL == 0.1
+    assert ACTION_PAUSE == 1.0
     for action in ACTIONS:
         assert action
         for frame in action:
