@@ -75,11 +75,18 @@ def main():
     open_canvas(WINDOW_WIDTH, WINDOW_HEIGHT)
     sonic = load_image(IMAGE_PATH)
 
-    clear_canvas()
-    draw_current_frame()
-    update_canvas()
-    handle_events()
-    delay(0.01)
+    running = True
+    previous_time = get_time()
+    while running:
+        running = handle_events()
+        current_time = get_time()
+        update_animation(current_time - previous_time)
+        previous_time = current_time
+
+        clear_canvas()
+        draw_current_frame()
+        update_canvas()
+        delay(0.01)
 
     close_canvas()
 
