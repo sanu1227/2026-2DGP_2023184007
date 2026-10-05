@@ -1,4 +1,5 @@
 from pico2d import *
+from sys import argv
 
 
 WINDOW_WIDTH = 800
@@ -128,6 +129,19 @@ pause_elapsed = 0.0
 state = PLAYING
 
 
+def validate_actions():
+    assert ACTIONS
+    for action in ACTIONS:
+        assert action
+        for frame in action:
+            source_x, source_y, width, height = frame
+            assert source_x >= 0
+            assert source_y >= 0
+            assert width > 0 and height > 0
+            assert source_x + width <= IMAGE_WIDTH
+            assert source_y + height <= IMAGE_HEIGHT
+
+
 def handle_events():
     for event in get_events():
         if event.type == SDL_QUIT:
@@ -202,4 +216,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    if '--self-check' in argv:
+        validate_actions()
+        print('ACTIONS self-check passed')
+    else:
+        main()
