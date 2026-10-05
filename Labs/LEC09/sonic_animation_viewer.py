@@ -8,7 +8,20 @@ IMAGE_WIDTH = 399
 IMAGE_HEIGHT = 525
 
 # (source_x, source_y, width, height), source origin is bottom-left.
-ACTIONS = []
+ACTIONS = [
+    [
+        (0, 447, 33, 39),
+        (33, 447, 33, 39),
+        (66, 447, 33, 39),
+        (99, 447, 33, 39),
+        (132, 447, 33, 39),
+        (165, 447, 33, 39),
+        (198, 447, 33, 39),
+        (231, 447, 33, 39),
+        (264, 447, 33, 39),
+        (297, 447, 33, 39),
+    ],
+]
 
 
 sonic = None
